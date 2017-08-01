@@ -11,47 +11,41 @@ using namespace std;
 返回：返回数组中的相应位置，否则返回-1
 */
 //非递归查找
-int BinarySearch(int *array, int aSize, int key)
-{
-	if (array == NULL || aSize == 0)
+int BinarySearch(int array[], int aSize, int key)
+{//int array[] = { 1,2,3,4,5,6,7,8,9,10 };
+	if (array == NULL || aSize <= 0)
 		return -1;
-	int low = 0;
-	int high = aSize - 1;
-	int mid = 0;
-
-	while (low <= high)
-	{
-		mid = (low + high) / 2;
-
-		if (array[mid] < key)
-			low = mid + 1;
-		else if (array[mid] > key)
-			high = mid - 1;
-		else
+	int left = 0, right = aSize - 1;
+	int mid;
+	while (left < right) {
+		mid = (left + right) / 2;
+		if (array[mid] == key)
 			return mid;
+		else if (array[mid] > key)
+			right = mid - 1;
+		else
+			left = mid + 1;
 	}
 	return -1;
 }
 //递归
-int BinarySearchRecursive(int *array, int low, int high, int key)
-{
-	if (low > high)
+int BinarySearchRecursive(int array[], int low, int high, int key)
+{//int array[] = { 1,2,3,4,5,6,7,8,9,10 };
+	if (array == NULL)
 		return -1;
-	int mid = (low + high) / 2;
-
+	int left = low, right = high;
+	int mid = (left + right) / 2;
 	if (array[mid] == key)
 		return mid;
-	else if (array[mid] < key)
-		return BinarySearchRecursive(array, mid + 1, high, key);
-	else
+	else if (array[mid] > key)
 		return BinarySearchRecursive(array, low, mid - 1, key);
+	else
+		return BinarySearchRecursive(array, mid + 1, high, key);
 }
 
 int main()
 {
-	int array[10];
-	for (int i = 0; i<10; i++)
-		array[i] = i;
+	int array[] = { 1,2,3,4,5,6,7,8,9,10 };
 
 	cout << "No recursive:" << endl;
 	cout << "position:" << BinarySearch(array, 10, 6) << endl;

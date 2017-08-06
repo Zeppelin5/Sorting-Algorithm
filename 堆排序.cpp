@@ -1,76 +1,45 @@
-/*堆排序(大顶堆) 2011.9.14*/ 
-
 #include <iostream>
-#include<algorithm>
 using namespace std;
 
-void HeapAdjust(int *a,int i,int size)  //调整堆 
-{
-	int lchild=2*i;       //i的左孩子节点序号 
-	int rchild=2*i+1;     //i的右孩子节点序号 
-	int max=i;            //临时变量 
-	if(i<=size/2)          //如果i不是叶节点就不用进行调整 
-	{
-		if(lchild<=size&&a[lchild]>a[max])
-		{
-			max=lchild;
-		}    
-		if(rchild<=size&&a[rchild]>a[max])
-		{
-			max=rchild;
+void adjustHeap(int * arrs, int p, int len) {
+	int curParent = arrs[p];
+	int child = 2 * p + 1;//左孩子
+	while (child < len) {//判断是否存在孩子
+		if (child + 1 < len&&arrs[child] < arrs[child + 1])
+			child++;//返回最大的孩子。若左小于右孩子，则返回右孩子
+		if (curParent < arrs[child]) {
+			arrs[p] = arrs[child];//孩子大，则上移孩子
+			p = child;//下移该节点（孩子的父亲）
+			child = 2 * p + 1;//新孩子的位置
 		}
-		if(max!=i)
-		{
-			swap(a[i],a[max]);
-			HeapAdjust(a,max,size);    //避免调整之后以max为父节点的子树不是堆 
-		}
-	}        
+		else
+			break;//，没有孩子了，则跳出，
+	}
+	arrs[p] = curParent;//把curParent赋给下移的父亲
 }
 
-void BuildHeap(int *a,int size)    //建立堆 
-{
-	int i;
-	for(i=size/2;i>=1;i--)    //非叶节点最大序号值为size/2 
-	{
-		HeapAdjust(a,i,size);    
-	}    
-} 
+void heapSort(int * arrs, int len) {
+	for (int i = (len - 1) / 2; i >= 0; i--) {
+		adjustHeap(arrs, i, len);
+	}//建堆。要做递增排序时，做大顶堆
+	for (int i = len - 1; i >= 0; i--) {
+		int top = arrs[0];
+		arrs[0] = arrs[i];
+		arrs[i] = top;//把大顶堆的顶和数组最后一个元素交换，这样大的在后面
 
-void HeapSort(int *a,int size)    //堆排序 
-{
-	int i;
-	BuildHeap(a,size);
-	for(i=size;i>=1;i--)
-	{
-		//cout<<a[1]<<" ";
-		swap(a[1],a[i]);           //交换堆顶和最后一个元素，即每次将剩余元素中的最大者放到最后面。 另：a[0]存储的是size，所以不用管它
-		//BuildHeap(a,i-1);        //将余下元素重新建立为大顶堆 
-		HeapAdjust(a,1,i-1);      //重新调整堆顶节点成为大顶堆
+		adjustHeap(arrs, 0, i);//筛选时，每次都从最上面开始，最后调出大顶堆
 	}
-} 
+}
 
-int main(int argc, char *argv[])
+int main()
 {
-	//int a[]={1,16,20,3,11,17,8};
-	//int size=sizeof(a)/sizeof(a[0]);
-	//HeapSort(a,size);
-	//for(int i=1;i<=size;i++)
-	//	cout<<a[i]<<" ";
-	//cout<<endl;
-	//getchar();
-	//return 0;
+	int arrs[] = { 49,38,65,97,76,13,27,49 };
+	int arrLen = sizeof(arrs) / sizeof(arrs[0]);
+	heapSort(arrs, arrLen);
+	for (int i = 0; i < arrLen; i++)
+		cout << arrs[i] << " ";
+	cout << endl;
 
-	int a[100];
-	int size;
-	while (cin>>size&&size>0)
-	{
-		int i;
-		for(i=1;i<=size;i++)
-			cin>>a[i];
-		HeapSort(a,size);
-		for(i=1;i<=size;i++)
-			cout<<a[i]<<" ";
-		cout<<endl;
-	}
+	getchar();
 	return 0;
 }
